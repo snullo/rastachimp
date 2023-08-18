@@ -59,7 +59,8 @@ def _smooth_chaikin_edges(
     xy_edge_index = _index_edges_by_xy(edges)
 
     sm_edges = []
-    for edge_index, edge in enumerate(edges):
+    edge_index=0
+    for edge in edges.geoms:
         if keep_border and edge_index in border_index:
             # nothing to do
             sm_edges.append(edge)
@@ -94,6 +95,7 @@ def _smooth_chaikin_edges(
             coords = coords[index_close - 1 : -index_close]
         sm_edges.append(LineString(coords))
 
+        edge_index=edge_index+1
     # faces and edges have not been modified
     return MultiLineString(sm_edges), faces, edges
 
@@ -244,10 +246,10 @@ def _build_topology(polygons, edges):
         face = []
         for ring, pring in zip(rings, preps):
             indexes = list(edge_si.intersection(ring.bounds))
-            indexes = list(filter(lambda i: pring.contains(edges[i]), indexes))
+            indexes = list(filter(lambda i: pring.contains(edges.geoms[i]), indexes))
             # sequence of oriented edges for current ring
             topo_ring = _build_topo_ring(
-                list(map(lambda i: edges[i], indexes)), indexes
+                list(map(lambda i: edges.geoms[i], indexes)), indexes
             )
             face.append(topo_ring)
         faces.append(face)
@@ -368,9 +370,11 @@ def _segmentize_border(faces, edges, border_index):
 
 def _index_edges_by_xy(edges):
     rindex = defaultdict(set)
-    for i, edge in enumerate(edges):
+    i=0
+    for edge in edges.geoms:
         rindex[edge.coords[0]].add(i)
         rindex[edge.coords[-1]].add(i)
+        i=i+1
     return rindex
 
 
@@ -389,10 +393,10 @@ def _build_geom_ring(ring, edges):
     coords = []
     for edge_index, is_same_order in ring:
         if is_same_order:
-            coords.extend(edges[edge_index].coords[:-1])
+            coords.extend(edges.geoms[edge_index].coords[:-1])
         else:
             # revert
-            coords.extend(edges[edge_index].coords[:0:-1])
+            coords.extend(edges.geoms[edge_index].coords[:0:-1])
     # close the contour
     coords.append(coords[0])
     return coords
