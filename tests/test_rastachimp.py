@@ -50,7 +50,7 @@ def test_densify():
 
     # subdivide once (n=1)
     ds_edges, _, _ = _densify_edges(None, [edge], None, n=1, keep_border=False)
-    ds_coords = ds_edges[0].coords
+    ds_coords = ds_edges.geoms[0].coords
 
     # 2 new segments for each input
     assert len(ds_coords) == 23
@@ -71,7 +71,7 @@ def test_densify():
     ds_edges, _, _ = _densify_edges(
         None, [edge], max_distance=1, n=None, keep_border=False
     )
-    ds_coords = ds_edges[0].coords
+    ds_coords = ds_edges.geoms[0].coords
 
     # for max_distance=1 => 3 new segments for each input
     assert len(ds_coords) == 34

@@ -95,7 +95,7 @@ def _smooth_chaikin_edges(
             coords = coords[index_close - 1 : -index_close]
         sm_edges.append(LineString(coords))
 
-        edge_index=edge_index+1
+        edge_index+=1
     # faces and edges have not been modified
     return MultiLineString(sm_edges), faces, edges
 
@@ -374,7 +374,7 @@ def _index_edges_by_xy(edges):
     for edge in edges.geoms:
         rindex[edge.coords[0]].add(i)
         rindex[edge.coords[-1]].add(i)
-        i=i+1
+        i+=1
     return rindex
 
 

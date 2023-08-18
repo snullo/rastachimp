@@ -17,10 +17,9 @@ def extract_geoms(fs):
 def build_spatial_index(geometries):
     spatial_index = Rtree()
     g = 0
-    print(geometries)
     for geom in geometries.geoms:
         spatial_index.add(g, geom.bounds)
-        g=g+1
+        g+=1
     return spatial_index
 
 
